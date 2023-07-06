@@ -74,7 +74,7 @@ class AwsCognitoClaim
             $this->data = $authResult;
             $this->username = $username;
             $this->user = $user;
-            $this->sub = $user['id'];
+            $this->sub = $user['id'] ?? $user['Admin_ID'];
 
         } catch(Exception $e) {
             throw $e;
