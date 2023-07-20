@@ -81,7 +81,7 @@ trait AuthenticatesUsers
             $userFields = config('cognito.cognito_user_fields');
 
             //Get key fields
-            $keyUsername = $userFields['email'];
+            $keyUsername = 'username';
             $keyPassword = 'password';
             $rememberMe = $request->has('remember')?$request['remember']:false;
 

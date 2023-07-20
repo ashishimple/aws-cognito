@@ -263,9 +263,11 @@ class AwsCognitoClient
             $response = $this->client->signUp($payload);
         } catch (CognitoIdentityProviderException $e) {
             if ($e->getAwsErrorCode() === self::USERNAME_EXISTS) {
-                return false;
+                return $e;
             } //End if
-
+			if ($e->getAwsErrorCode() === "InvalidPasswordException") {
+				return $e;
+			}
             throw $e;
         } //Try-catch ends
 
@@ -458,7 +460,7 @@ class AwsCognitoClient
         //Set Delivery Mediums
         if ((config('cognito.add_user_delivery_mediums')!="NONE") || (config('cognito.mfa_setup')=="MFA_ENABLED")) {
             if (config('cognito.add_user_delivery_mediums')=="BOTH") {
-                $payload['DesiredDeliveryMediums'] = ['EMAIL', 'SMS'];
+                $payload['DesiredDeliveryMediums'] = ['EMAIL'];
             } else {
                 $defaultDeliveryMedium = (config('cognito.mfa_setup')=="MFA_ENABLED")?"SMS":config('cognito.add_user_delivery_mediums', "EMAIL");
                 $payload['DesiredDeliveryMediums'] = [ $defaultDeliveryMedium ];
@@ -547,11 +549,11 @@ class AwsCognitoClient
             ]);
         } catch (CognitoIdentityProviderException $e) {
             if ($e->getAwsErrorCode() === self::USER_NOT_FOUND) {
-                return Password::INVALID_USER;
+                return $e;
             } //End if
 
             if ($e->getAwsErrorCode() === self::INVALID_PASSWORD) {
-                return Lang::has('passwords.password') ? 'passwords.password' : $e->getAwsErrorMessage();
+                return $e;
             } //End if
 
             throw $e;
