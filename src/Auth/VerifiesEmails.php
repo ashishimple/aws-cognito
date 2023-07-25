@@ -35,10 +35,10 @@ trait VerifiesEmails
     public function verify(Collection $request)
     {
 
-        $validator = Validator::make($request, [
-            'email' => 'required|email', 
-            'confirmation_code' => 'required|numeric',
-        ]);
+        //$validator = Validator::make($request, [
+        //    'email' => 'required|email', 
+        //    'confirmation_code' => 'required|numeric',
+        //]);
 
         $response = app()->make(AwsCognitoClient::class)->confirmUserSignUp($request['email'], $request['confirmation_code']);
 
@@ -77,7 +77,7 @@ trait VerifiesEmails
     public function resend(Collection $request)
     {
 
-        $response = app()->make(AwsCognitoClient::class)->resendToken($request->email);
+        $response = app()->make(AwsCognitoClient::class)->resendToken($request['email']);
 
         if ($response == 'validation.invalid_user') {
             return response()->json(['error' => 'cognito.validation.invalid_user'], 400);
